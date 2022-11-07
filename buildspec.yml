@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      - npm install node-fetch
+      - npm install yargs
+      # SonarQube is needed for the build script, not as aprt of the Lambda Package.
+      - npm install --location=global sonarqube-scanner
+  build:
+    commands:
+      - node waitForApplication.mjs --application $SONARQUBE_SERVER --verbose
+      - sonar-scanner
+        -Dsonar.projectKey=$SONARQUBE_PROJECT
+        -Dsonar.sources=.
+        -Dsonar.exclusions=**/test/*,coverage/**/*,node_modules/**/*,test-report.xml
+        -Dsonar.tests=.
+        -Dsonar.test.inclusions=**/test/*
+        -Dsonar.host.url=$SONARQUBE_SERVER
+        -Dsonar.login=$SONARQUBE_LOGIN
+  post_build:
+    commands:
+artifacts:
+  files:
