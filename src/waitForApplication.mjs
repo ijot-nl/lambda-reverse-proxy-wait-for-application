@@ -19,39 +19,56 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
 import { setTimeout } from 'timers/promises';
 
-const TEN_SECONDS_IN_MS = 10 * 1000;
-
 const argv = yargs(hideBin(process.argv))
     .option('application', {
         alias: 'a',
         description: 'Client-facing URL of application served by the Lambda Reverse Proxy. e.g. https://myapplication.mydomain.com',
-        type: 'string'
+        type: 'string',
+        demandOption: true
     })
     .option('verbose', {
         alias: 'v',
         description: 'Run with verbose logging.',
-        type: 'boolean'
+        type: 'boolean',
+        default: false
     })
-    .demandOption('application')
+    .option('retry', {
+        alias: 'r',
+        descrtiption: 'Retry interval in seconds.',
+        type: 'number',
+        default: 10
+    })
+    .option('timeout', {
+        alias: 't',
+        description: 'Timeout in seconds',
+        type: 'number',
+        default: 2500
+    })
     .help()
     .alias('help', 'h')
     .argv;
 
 async function waitForApplication() {
+    let timeout = Date.now() + argv.timeout * 1000;
     let response;
     do {
         response = await fetch(argv.application);
         if (response.status >= 400) {
             if (argv.verbose) {
-                console.log('Application: ' + argv.application + ' is not ready. Retrying in 10s.');
+                console.log('Application: ' + argv.application + ' is not ready. Retrying in ' + argv.retry + 's.');
             }
-            await setTimeout(TEN_SECONDS_IN_MS);
+            if (Date.now() > timeout) {
+                console.error('Application did not become ready within the timeout period (' + argv.timeout + 's). Aborting.');
+                process.exitCode = 1;
+            } else {
+                await setTimeout(argv.retry * 1000);
+            }
+        } else {
+            if (argv.verbose) {
+                console.log('Application: ' + argv.application + ' is ready');
+            }
         }
-    } while (response.status >= 400);
-
-    if (argv.verbose) {
-        console.log('Application: ' + argv.application + ' is ready');
-    }
+    } while (response.status >= 400 && !process.exitCode);
 }
 
 waitForApplication();
