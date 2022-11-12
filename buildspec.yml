@@ -11,7 +11,7 @@ phases:
       - npm install --location=global sonarqube-scanner
   build:
     commands:
-      - node waitForApplication.mjs --application $SONAR_HOST_URL --verbose
+      - node src/waitForApplication.mjs --application $SONAR_HOST_URL --verbose
       - sonar-scanner
         -Dsonar.projectKey=$SONAR_PROJECT
         -Dsonar.sources=.
