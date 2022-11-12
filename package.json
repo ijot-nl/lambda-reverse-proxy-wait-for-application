@@ -13,6 +13,7 @@
         "node-fetch": "3.2.10",
         "yargs": "17.5.1"
     },
+    "main": "src/waitForApplication.mjs",
     "bin": {
         "waitForApplication": "./src/waitForApplication.mjs"
     }
