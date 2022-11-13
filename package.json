@@ -10,8 +10,8 @@
     },
     "description": "Used from a script to check that a Lambda Reverse Proxy based application is ready before use.",
     "dependencies": {
-        "node-fetch": "3.2.10",
-        "yargs": "17.5.1"
+        "node-fetch": "3.3.0",
+        "yargs": "17.6.2"
     },
     "main": "src/waitForApplication.mjs",
     "bin": {

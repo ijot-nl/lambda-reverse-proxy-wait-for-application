@@ -5,12 +5,15 @@ phases:
     runtime-versions:
       nodejs: 16
     commands:
-      - npm install node-fetch
-      - npm install yargs
+      - npm install
       # SonarQube is needed for the build script, not as part of the package.
       - npm install --location=global sonarqube-scanner
   build:
     commands:
+      # The folowing environment variables must be defined:
+      # SONAR_HOST_URL : The URL for SonarQube (e.g. : https://sonarqube.yourdomain.com)
+      # SONAR_PROJECT : The project identifier for this module in your SonarQube deployment
+      # SONAR_TOKEN : The token credential for use with this SonarQube project
       - node src/waitForApplication.mjs --application $SONAR_HOST_URL --verbose
       - sonar-scanner
         -Dsonar.projectKey=$SONAR_PROJECT
