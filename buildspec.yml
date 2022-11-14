@@ -12,7 +12,7 @@ phases:
       # SONAR_HOST_URL : The URL for SonarQube (e.g. : https://sonarqube.yourdomain.com)
       # SONAR_TOKEN : The SonarQube issued credential with permissions to update (or create) this project in SonarQube.
       - node src/waitForApplication.mjs --application $SONAR_HOST_URL --verbose
-      - npm sonar
+      - npm run sonar
   post_build:
     commands:
 artifacts:
