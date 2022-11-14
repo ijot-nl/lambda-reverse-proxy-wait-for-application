@@ -1,20 +1,29 @@
 {
-    "name": "lambda-reverse-proxy-wait-for-application",
+    "name": "@ijot/lambda-reverse-proxy-wait-for-application",
     "version": "0.0.1",
-    "private": "true",
-    "license": "UNLICENSED",
-    "type": "module",
+    "description": "Used from a script to check that a Lambda Reverse Proxy based application is ready before use.",
+    "bugs": {
+        "url": "https://github.com/ijot-nl/lambda-reverse-proxy-wait-for-application/issues"
+    },
+    "license": "Apache-2.0",
+    "main": "src/waitForApplication.mjs",
+    "bin": {
+        "waitForApplication": "./src/waitForApplication.mjs"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/ijot-nl/lambda-reverse-proxy-wait-for-application.git"
     },
-    "description": "Used from a script to check that a Lambda Reverse Proxy based application is ready before use.",
+    "scripts": {
+        "sonar": "node sonar.js"
+    },
     "dependencies": {
         "node-fetch": "3.3.0",
         "yargs": "17.6.2"
     },
-    "main": "src/waitForApplication.mjs",
-    "bin": {
-        "waitForApplication": "./src/waitForApplication.mjs"
-    }
+    "devDependencies": {
+        "sonarqube-scanner": "2.8.2"
+    },
+    "private": "true",
+    "type": "module"
 }
