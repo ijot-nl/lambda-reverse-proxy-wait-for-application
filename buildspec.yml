@@ -18,6 +18,8 @@ phases:
   post_build:
     commands:
       - echo //registry.npmjs.org/:_authToken=$NPM_TOKEN > .npmrc
+      - git config user.email "aws-codebuild@ijot.nl"
+      - git config user.name "AWS Codebuild"
       - npm version patch
       - npm publish --access public
 artifacts:
