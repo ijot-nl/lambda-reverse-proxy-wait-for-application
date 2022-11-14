@@ -24,6 +24,5 @@
     "devDependencies": {
         "sonarqube-scanner": "2.8.2"
     },
-    "private": "true",
     "type": "module"
 }

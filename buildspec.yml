@@ -2,11 +2,13 @@ version: 0.2
 
 phases:
   install:
+    on-failure: ABORT
     runtime-versions:
       nodejs: 16
     commands:
       - npm install
   build:
+    on-failure: ABORT
     commands:
       # The folowing environment variables must be defined:
       # SONAR_HOST_URL : The URL for SonarQube (e.g. : https://sonarqube.yourdomain.com)
@@ -15,5 +17,7 @@ phases:
       - npm run sonar
   post_build:
     commands:
+      - echo //registry.npmjs.org/:_authToken=$NPM_TOKEN > .npmrc
+      - npm publish --access public
 artifacts:
   files:
