@@ -22,5 +22,4 @@ phases:
       - git config user.name "AWS Codebuild"
       - npm version patch
       - npm publish --access public
-artifacts:
-  files:
+      - git push
