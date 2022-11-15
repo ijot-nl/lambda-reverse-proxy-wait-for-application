@@ -16,10 +16,14 @@ phases:
       - node src/waitForApplication.mjs --application $SONAR_HOST_URL --verbose
       - npm run sonar
   post_build:
+    on-failure: ABORT
     commands:
+      # The folowing environment variable must be defined:
+      # NPM_TOKEN : Token issued by npmjs.com with permissions to publish this package.
       - echo //registry.npmjs.org/:_authToken=$NPM_TOKEN > .npmrc
       - git config user.email "aws-codebuild@ijot.nl"
       - git config user.name "AWS Codebuild"
       - npm version patch
       - npm publish --access public
+      # @@TODO: The next statement fails (pushing version update back to GitHub).
       - git push origin main
