@@ -17,7 +17,7 @@
 
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers';
-import { waitForApplication } from './waitForApplication.mjs'
+import { waitForApplication, DEFAULT_RETRY_INTERVAL, DEFAULT_TIMEOUT_INTERVAL } from './waitForApplication.mjs'
 
 const argv = yargs(hideBin(process.argv))
     .option('application', {
@@ -36,13 +36,13 @@ const argv = yargs(hideBin(process.argv))
         alias: 'r',
         descrtiption: 'Retry interval in seconds.',
         type: 'number',
-        default: 10
+        default: DEFAULT_RETRY_INTERVAL
     })
     .option('timeout', {
         alias: 't',
         description: 'Timeout in seconds',
         type: 'number',
-        default: 2500
+        default: DEFAULT_TIMEOUT_INTERVAL
     })
     .help()
     .alias('help', 'h')

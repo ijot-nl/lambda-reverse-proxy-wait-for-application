@@ -17,6 +17,12 @@
 import fetch from 'node-fetch';
 import { setTimeout } from 'timers/promises';
 
+const DEFAULT_RETRY_INTERVAL = 10;
+const DEFAULT_TIMEOUT_INTERVAL = 2500;
+
+const ONE_SECOND_IN_MS = 1000;
+const HTTP_400_BAD_REQUEST = 400;
+
 /**
  * Wait for a service to be up and ready.
  * An HTTP response of 400 or more is assumed to be a temporary failure.
@@ -30,26 +36,29 @@ import { setTimeout } from 'timers/promises';
  * 
  */
 async function waitForApplication(parameters) {
-    logIfVerboseLoggingEnabled(parameters.verbose, 'Waiting for: ' + parameters.application);
-    logIfVerboseLoggingEnabled(parameters.verbose, 'Retry interval (seconds): ' + parameters.retry);
-    logIfVerboseLoggingEnabled(parameters.verbose, 'Timeout interval (seconds): ' + parameters.timeout);
+    const verbose = parameters.verbose;
+    const retryInterval = parameters.retry ? parameters.retry : DEFAULT_RETRY_INTERVAL;
+    const timeoutInterval = parameters.timeout ? parameters.timeout : DEFAULT_TIMEOUT_INTERVAL;
+    logIfVerboseLoggingEnabled(verbose, 'Waiting for: ' + parameters.application);
+    logIfVerboseLoggingEnabled(verbose, 'Retry interval (seconds): ' + retryInterval);
+    logIfVerboseLoggingEnabled(verbose, 'Timeout interval (seconds): ' + timeoutInterval);
 
-    let timeout = Date.now() + parameters.timeout * 1000;
+    let timeout = Date.now() + timeoutInterval * ONE_SECOND_IN_MS;
     let response;
     do {
         response = await fetch(parameters.application);
-        if (response.status >= 400) {
-            logIfVerboseLoggingEnabled(parameters.verbose, 'Application: ' + parameters.application + ' is not ready. Retrying in ' + parameters.retry + 's.');
+        if (response.status >= HTTP_400_BAD_REQUEST) {
+            logIfVerboseLoggingEnabled(verbose, 'Application: ' + parameters.application + ' is not ready. Retrying in ' + retryInterval + 's.');
             if (Date.now() > timeout) {
-                console.error('Application did not become ready within the timeout period (' + parameters.timeout + 's). Aborting.');
+                console.error('Application did not become ready within the timeout period (' + timeoutInterval + 's). Aborting.');
                 process.exitCode = 1;
             } else {
-                await setTimeout(parameters.retry * 1000);
+                await setTimeout(retryInterval * ONE_SECOND_IN_MS);
             }
         } else {
-            logIfVerboseLoggingEnabled(parameters.verbose, 'Application: ' + parameters.application + ' is ready');
+            logIfVerboseLoggingEnabled(verbose, 'Application: ' + parameters.application + ' is ready');
         }
-    } while (response.status >= 400 && !process.exitCode);
+    } while (response.status >= HTTP_400_BAD_REQUEST && !process.exitCode);
 }
 
 /**
@@ -65,4 +74,5 @@ function logIfVerboseLoggingEnabled(verbose, message) {
     }
 }
 
+export { waitForApplication, DEFAULT_RETRY_INTERVAL, DEFAULT_TIMEOUT_INTERVAL };
 export default waitForApplication;
