@@ -8,7 +8,7 @@
     "license": "Apache-2.0",
     "main": "src/waitForApplication.mjs",
     "bin": {
-        "waitForApplication": "./src/waitForApplication.mjs"
+        "waitForApplication": "./src/waitCli.mjs"
     },
     "repository": {
         "type": "git",

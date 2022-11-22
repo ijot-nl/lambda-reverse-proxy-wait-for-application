@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
  * Copyright 2022 IJoT B.V.
  *
@@ -16,38 +15,7 @@
  */
 
 import fetch from 'node-fetch';
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers';
 import { setTimeout } from 'timers/promises';
-
-const argv = yargs(hideBin(process.argv))
-    .option('application', {
-        alias: 'a',
-        description: 'Client-facing URL of application served by the Lambda Reverse Proxy. e.g. https://myapplication.mydomain.com',
-        type: 'string',
-        demandOption: true
-    })
-    .option('verbose', {
-        alias: 'v',
-        description: 'Run with verbose logging.',
-        type: 'boolean',
-        default: false
-    })
-    .option('retry', {
-        alias: 'r',
-        descrtiption: 'Retry interval in seconds.',
-        type: 'number',
-        default: 10
-    })
-    .option('timeout', {
-        alias: 't',
-        description: 'Timeout in seconds',
-        type: 'number',
-        default: 2500
-    })
-    .help()
-    .alias('help', 'h')
-    .argv;
 
 /**
  * Wait for a service to be up and ready.
@@ -96,7 +64,5 @@ function logIfVerboseLoggingEnabled(verbose, message) {
         console.log(message);
     }
 }
-
-waitForApplication(argv);
 
 export default waitForApplication;
