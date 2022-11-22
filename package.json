@@ -1,6 +1,6 @@
 {
     "name": "@ijot/lambda-reverse-proxy-wait-for-application",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Used from a script to check that a Lambda Reverse Proxy based application is ready before use.",
     "bugs": {
         "url": "https://github.com/ijot-nl/lambda-reverse-proxy-wait-for-application/issues"
