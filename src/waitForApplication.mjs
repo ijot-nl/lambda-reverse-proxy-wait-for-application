@@ -52,13 +52,13 @@ async function waitForApplication(parameters) {
     logIfVerboseLoggingEnabled(verbose, 'Retry interval (seconds): ' + retryInterval);
     logIfVerboseLoggingEnabled(verbose, 'Timeout interval (seconds): ' + timeoutInterval);
 
-    let timeout = Date.now() + timeoutInterval * ONE_SECOND_IN_MS;
+    let timeout = performance.now() + timeoutInterval * ONE_SECOND_IN_MS;
     let response;
     do {
         response = await fetch(application);
         if (response.status >= HTTP_400_BAD_REQUEST) {
             logIfVerboseLoggingEnabled(verbose, 'Application: ' + application + ' is not ready. Retrying in ' + retryInterval + 's.');
-            if (Date.now() > timeout) {
+            if (performance.now() > timeout) {
                 const message = 'Application did not become ready within the timeout period (' + timeoutInterval + 's). Aborting.'
                 console.error(message);
                 throw new Error(message);
