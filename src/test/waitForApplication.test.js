@@ -13,10 +13,10 @@ beforeAll(() => {
     consoleLog = jest.spyOn(console, "log").mockImplementation(() => {
         // Empty mock.
     });
-    fetchMock.mockReturnValue(Promise.resolve({ status: 200 }));
 });
 
 test('Verbose Test', async () => {
+    fetchMock.mockReturnValueOnce(Promise.resolve({ status: 200 }));
     await waitForApplication({
         application: "https://www.example.com",
         verbose: true
@@ -25,6 +25,7 @@ test('Verbose Test', async () => {
 });
 
 test('Not Verbose Test', async () => {
+    fetchMock.mockReturnValueOnce(Promise.resolve({ status: 200 }));
     await waitForApplication({
         application: "https://www.example.com",
         verbose: false
@@ -33,11 +34,23 @@ test('Not Verbose Test', async () => {
 });
 
 test('Not Verbose (default)', async () => {
+    fetchMock.mockReturnValueOnce(Promise.resolve({ status: 200 }));
     await waitForApplication({
         application: "https://www.example.com"
     });
     expect(consoleLog).not.toHaveBeenCalled();
 });
+
+test('Ready 2nd time', async () => {
+    fetchMock
+        .mockReturnValueOnce(Promise.resolve({ status: 400 }))
+        .mockReturnValueOnce(Promise.resolve({ status: 200 }));
+    const promise = waitForApplication({
+        application: "https://www.example.com",
+        retry: 1
+    });
+    await promise;
+})
 
 afterEach(() => {
     consoleLog.mockClear();
