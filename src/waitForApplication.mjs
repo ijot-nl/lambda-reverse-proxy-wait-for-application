@@ -33,32 +33,42 @@ const HTTP_400_BAD_REQUEST = 400;
  * @param: {boolean} parameters.verbose - Run with verbose logging.parameters
  * @param: {number} parameters.retry - Retry interval (seconds)
  * @param: {number} parameters.timeout - Timeout interval (seconds)
+ * @throws: Will throw an error if application parameter is missing, or if a timeout occurs.
  * 
  */
 async function waitForApplication(parameters) {
     const verbose = parameters.verbose;
     const retryInterval = parameters.retry ? parameters.retry : DEFAULT_RETRY_INTERVAL;
     const timeoutInterval = parameters.timeout ? parameters.timeout : DEFAULT_TIMEOUT_INTERVAL;
-    logIfVerboseLoggingEnabled(verbose, 'Waiting for: ' + parameters.application);
+    const application = parameters.application;
+
+    if (!application) {
+        const message = 'Application not defined. Aborting.'
+        console.error(message);
+        throw new Error(message);
+    }
+
+    logIfVerboseLoggingEnabled(verbose, 'Waiting for: ' + application);
     logIfVerboseLoggingEnabled(verbose, 'Retry interval (seconds): ' + retryInterval);
     logIfVerboseLoggingEnabled(verbose, 'Timeout interval (seconds): ' + timeoutInterval);
 
     let timeout = Date.now() + timeoutInterval * ONE_SECOND_IN_MS;
     let response;
     do {
-        response = await fetch(parameters.application);
+        response = await fetch(application);
         if (response.status >= HTTP_400_BAD_REQUEST) {
-            logIfVerboseLoggingEnabled(verbose, 'Application: ' + parameters.application + ' is not ready. Retrying in ' + retryInterval + 's.');
+            logIfVerboseLoggingEnabled(verbose, 'Application: ' + application + ' is not ready. Retrying in ' + retryInterval + 's.');
             if (Date.now() > timeout) {
-                console.error('Application did not become ready within the timeout period (' + timeoutInterval + 's). Aborting.');
-                process.exitCode = 1;
+                const message = 'Application did not become ready within the timeout period (' + timeoutInterval + 's). Aborting.'
+                console.error(message);
+                throw new Error(message);
             } else {
                 await setTimeout(retryInterval * ONE_SECOND_IN_MS);
             }
         } else {
-            logIfVerboseLoggingEnabled(verbose, 'Application: ' + parameters.application + ' is ready');
+            logIfVerboseLoggingEnabled(verbose, 'Application: ' + application + ' is ready');
         }
-    } while (response.status >= HTTP_400_BAD_REQUEST && !process.exitCode);
+    } while (response.status >= HTTP_400_BAD_REQUEST);
 }
 
 /**

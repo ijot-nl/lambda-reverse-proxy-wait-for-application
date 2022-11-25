@@ -19,15 +19,13 @@ await waitForApplication({
     verbose: true
 });
 
-if (!process.exitCode) {
-    scanner({
-        serverUrl: sonarHostURL,
-        token: sonarToken,
-        options: {
-            "sonar.sources": "src",
-            "sonar.exclusions": "**/test/**",
-            "sonar.tests=": "src",
-            "sonar.test.inclusions": "**/test**",
-        }
-    }, () => process.exit());
-}
+scanner({
+    serverUrl: sonarHostURL,
+    token: sonarToken,
+    options: {
+        "sonar.sources": "src",
+        "sonar.exclusions": "**/test/**",
+        "sonar.tests=": "src",
+        "sonar.test.inclusions": "**/test**",
+    }
+}, () => process.exit());

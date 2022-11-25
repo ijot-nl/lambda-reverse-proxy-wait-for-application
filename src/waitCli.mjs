@@ -48,4 +48,8 @@ const argv = yargs(hideBin(process.argv))
     .alias('help', 'h')
     .argv;
 
-waitForApplication(argv);
+try {
+    await waitForApplication(argv);
+} catch (error) {
+    process.exitCode = 1;
+}
