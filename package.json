@@ -15,6 +15,7 @@
         "url": "https://github.com/ijot-nl/lambda-reverse-proxy-wait-for-application.git"
     },
     "scripts": {
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
         "sonar": "node sonar.js"
     },
     "dependencies": {
@@ -22,7 +23,13 @@
         "yargs": "17.6.2"
     },
     "devDependencies": {
+        "jest": "29.3.1",
+        "jest-sonar-reporter": "2.0.0",
         "sonarqube-scanner": "2.8.2"
     },
-    "type": "module"
+    "type": "module",
+    "jest": {
+        "testResultsProcessor": "jest-sonar-reporter",
+        "transform": {}
+    }
 }

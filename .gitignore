@@ -1,2 +1,4 @@
-node_modules/
-.scannerwork/
+/coverage/
+/node_modules/
+/test-report.xml
+/.scannerwork/
